@@ -44,15 +44,20 @@ export function AuthProvider({ children }) {
       }
     };
 
-    const token = localStorage.getItem("token");
-    const usuarioSalvo = localStorage.getItem("usuario");
+    const inicializar = async () => {
+      const token = localStorage.getItem("token");
+      const usuarioSalvo = localStorage.getItem("usuario");
 
-    if (token && usuarioSalvo) {
-      setUsuario(JSON.parse(usuarioSalvo));
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
+      if (token && usuarioSalvo) {
+        setUsuario(JSON.parse(usuarioSalvo));
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      }
 
-    buscarEmpresaPorSubdominio().finally(() => setLoading(false));
+      await buscarEmpresaPorSubdominio();
+      setLoading(false);
+    };
+
+    inicializar();
   }, []);
 
   const login = async (email, senha) => {
